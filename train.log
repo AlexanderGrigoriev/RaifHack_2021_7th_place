@@ -1,125 +1,36 @@
-2021-09-24 16:40:22,967 __main__     INFO     START train.py
-2021-09-24 16:41:58,550 __main__     INFO     START train.py
-2021-09-24 16:41:58,551 __main__     INFO     Load train df
-2021-09-24 16:41:58,552 __main__     ERROR    Traceback (most recent call last):
-  File "/media/alex/Plextor_1T/ML/2021_raifhack/baseline/train.py", line 41, in <module>
-    train_df = pd.read_csv(args['d'])
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/io/parsers.py", line 688, in read_csv
-    return _read(filepath_or_buffer, kwds)
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/io/parsers.py", line 454, in _read
-    parser = TextFileReader(fp_or_buf, **kwds)
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/io/parsers.py", line 948, in __init__
-    self._make_engine(self.engine)
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/io/parsers.py", line 1180, in _make_engine
-    self._engine = CParserWrapper(self.f, **self.options)
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/io/parsers.py", line 2010, in __init__
-    self._reader = parsers.TextReader(src, **kwds)
-  File "pandas/_libs/parsers.pyx", line 537, in pandas._libs.parsers.TextReader.__cinit__
-  File "pandas/_libs/parsers.pyx", line 711, in pandas._libs.parsers.TextReader._get_header
-  File "pandas/_libs/parsers.pyx", line 905, in pandas._libs.parsers.TextReader._tokenize_rows
-  File "pandas/_libs/parsers.pyx", line 2042, in pandas._libs.parsers.raise_parser_error
-pandas.errors.ParserError: Error tokenizing data. C error: Calling read(nbytes) on source failed. Try engine='python'.
-
-2021-09-24 16:42:23,380 __main__     INFO     START train.py
-2021-09-24 16:42:23,381 __main__     INFO     Load train df
-2021-09-24 16:43:37,198 __main__     INFO     START train.py
-2021-09-24 16:43:37,200 __main__     INFO     Load train df
-2021-09-24 16:43:39,820 __main__     INFO     Input shape: (2974, 76)
-2021-09-24 16:43:59,724 __main__     INFO     START train.py
-2021-09-24 16:43:59,724 __main__     INFO     Load train df
-2021-09-24 16:43:59,741 __main__     INFO     Input shape: (2974, 76)
-2021-09-24 16:43:59,745 __main__     ERROR    Traceback (most recent call last):
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 2898, in get_loc
-    return self._engine.get_loc(casted_key)
-  File "pandas/_libs/index.pyx", line 70, in pandas._libs.index.IndexEngine.get_loc
-  File "pandas/_libs/index.pyx", line 101, in pandas._libs.index.IndexEngine.get_loc
-  File "pandas/_libs/hashtable_class_helper.pxi", line 1675, in pandas._libs.hashtable.PyObjectHashTable.get_item
-  File "pandas/_libs/hashtable_class_helper.pxi", line 1683, in pandas._libs.hashtable.PyObjectHashTable.get_item
-KeyError: 'per_square_meter_price'
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/media/alex/Plextor_1T/ML/2021_raifhack/baseline/train.py", line 46, in <module>
-    y_offer = train_df[train_df.price_type == PriceTypeEnum.OFFER_PRICE][TARGET]
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/core/frame.py", line 2906, in __getitem__
-    indexer = self.columns.get_loc(key)
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 2900, in get_loc
-    raise KeyError(key) from err
-KeyError: 'per_square_meter_price'
-
-2021-09-24 16:44:41,620 __main__     INFO     START train.py
-2021-09-24 16:44:41,622 __main__     INFO     Load train df
-2021-09-24 16:44:41,647 __main__     INFO     Input shape: (2974, 76)
-2021-09-24 16:44:52,499 __main__     ERROR    Traceback (most recent call last):
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 2898, in get_loc
-    return self._engine.get_loc(casted_key)
-  File "pandas/_libs/index.pyx", line 70, in pandas._libs.index.IndexEngine.get_loc
-  File "pandas/_libs/index.pyx", line 101, in pandas._libs.index.IndexEngine.get_loc
-  File "pandas/_libs/hashtable_class_helper.pxi", line 1675, in pandas._libs.hashtable.PyObjectHashTable.get_item
-  File "pandas/_libs/hashtable_class_helper.pxi", line 1683, in pandas._libs.hashtable.PyObjectHashTable.get_item
-KeyError: 'per_square_meter_price'
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/media/alex/Plextor_1T/ML/2021_raifhack/baseline/train.py", line 46, in <module>
-    y_offer = train_df[train_df.price_type == PriceTypeEnum.OFFER_PRICE][TARGET]
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/core/frame.py", line 2906, in __getitem__
-    indexer = self.columns.get_loc(key)
-  File "/home/alex/envs/tensorflow/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 2900, in get_loc
-    raise KeyError(key) from err
-KeyError: 'per_square_meter_price'
-
-2021-09-24 16:45:09,654 __main__     INFO     START train.py
-2021-09-24 16:45:09,655 __main__     INFO     Load train df
-2021-09-24 16:45:09,679 __main__     INFO     Input shape: (2974, 76)
-2021-09-24 16:46:16,090 __main__     INFO     START train.py
-2021-09-24 16:46:16,090 __main__     INFO     Load train df
-2021-09-24 16:46:17,021 __main__     INFO     Input shape: (279792, 77)
-2021-09-24 16:46:17,160 __main__     INFO     X_offer (275299, 70)  y_offer (275299,)	X_manual (4493, 70) y_manual (4493,)
-2021-09-24 16:46:17,160 __main__     INFO     Fit model
-2021-09-24 16:46:17,160 raif_hack.model INFO     Fit lightgbm
-2021-09-24 16:47:30,571 raif_hack.model INFO     Find corr coefficient
-2021-09-24 16:47:30,986 raif_hack.model INFO     Corr coef: -0.12
-2021-09-24 16:47:30,986 __main__     INFO     Save model
-2021-09-24 16:48:22,408 __main__     INFO     START train.py
-2021-09-24 16:48:22,409 __main__     INFO     Load train df
-2021-09-24 16:48:23,324 __main__     INFO     Input shape: (279792, 77)
-2021-09-24 16:48:23,461 __main__     INFO     X_offer (275299, 70)  y_offer (275299,)	X_manual (4493, 70) y_manual (4493,)
-2021-09-24 16:48:23,461 __main__     INFO     Fit model
-2021-09-24 16:48:23,461 raif_hack.model INFO     Fit lightgbm
-2021-09-24 16:48:35,101 raif_hack.model INFO     Find corr coefficient
-2021-09-24 16:48:35,134 raif_hack.model INFO     Corr coef: -0.12
-2021-09-24 16:48:35,134 __main__     INFO     Save model
-2021-09-24 16:48:37,403 __main__     INFO     Metrics stat for training data with offers prices: {'mape': 1.5204271589249918, 'mdape': 0.3125603548666689, 'rmse': 73946.13496006273, 'r2': 0.8172816627975483, 'raif_metric': 3.494380861461794}
-2021-09-24 16:48:37,452 __main__     INFO     Metrics stat for training data with manual prices: {'mape': 0.30544381035320944, 'mdape': 0.2475911644609627, 'rmse': 73135.92569254321, 'r2': 0.33086598274607304, 'raif_metric': 2.0449581821901974}
-2021-09-24 16:48:37,452 __main__     INFO     END train.py
-2021-09-24 16:53:01,326 __main__     INFO     START predict.py
-2021-09-24 16:53:01,327 __main__     INFO     Load test df
-2021-09-24 16:53:01,341 __main__     INFO     Input shape: (2974, 76)
-2021-09-24 16:53:01,343 __main__     INFO     Load model
-2021-09-24 16:53:01,365 __main__     INFO     Predict
-2021-09-24 16:53:01,386 __main__     INFO     Save results
-2021-09-24 16:53:01,409 __main__     INFO     END predict.py
-2021-09-24 16:54:03,119 __main__     INFO     START predict.py
-2021-09-24 16:54:03,119 __main__     INFO     Load test df
-2021-09-24 16:54:03,134 __main__     INFO     Input shape: (2974, 76)
-2021-09-24 16:54:03,136 __main__     INFO     Load model
-2021-09-24 16:54:03,162 __main__     INFO     Predict
-2021-09-24 16:54:03,187 __main__     INFO     Save results
-2021-09-24 16:54:03,194 __main__     INFO     END predict.py
-2021-09-24 16:58:06,986 __main__     INFO     START predict.py
-2021-09-24 16:58:06,986 __main__     INFO     Load test df
-2021-09-24 16:58:07,001 __main__     INFO     Input shape: (2974, 76)
-2021-09-24 16:58:07,002 __main__     INFO     Load model
-2021-09-24 16:58:07,025 __main__     INFO     Predict
-2021-09-24 16:58:07,051 __main__     INFO     Save results
-2021-09-24 16:58:07,061 __main__     INFO     END predict.py
-2021-09-24 16:59:03,847 __main__     INFO     START predict.py
-2021-09-24 16:59:03,847 __main__     INFO     Load test df
-2021-09-24 16:59:03,862 __main__     INFO     Input shape: (2974, 76)
-2021-09-24 16:59:03,864 __main__     INFO     Load model
-2021-09-24 16:59:03,886 __main__     INFO     Predict
-2021-09-24 16:59:03,908 __main__     INFO     Save results
-2021-09-24 16:59:03,916 __main__     INFO     END predict.py
+2021-09-25 12:17:21,171 __main__     INFO     START train.py
+2021-09-25 12:17:21,172 __main__     INFO     Load train df
+2021-09-25 12:17:22,106 __main__     INFO     Input shape: (279792, 77)
+2021-09-25 12:17:22,310 __main__     INFO     X_offer (275299, 71)  y_offer (275299,)	X_manual (4493, 71) y_manual (4493,)
+2021-09-25 12:17:22,311 __main__     INFO     Fit model
+2021-09-25 12:17:22,311 raif_hack.model INFO     Fit lightgbm
+2021-09-25 12:17:38,370 raif_hack.model INFO     Find corr coefficient
+2021-09-25 12:17:38,404 raif_hack.model INFO     Corr coef: -0.13
+2021-09-25 12:17:40,698 __main__     INFO     Metrics stat for training data with offers prices: {'mape': 1.4980128438459763, 'mdape': 0.30993250676863393, 'rmse': 72569.40592444973, 'r2': 0.8240220266486828, 'raif_metric': 3.4640246957296013}
+2021-09-25 12:17:40,749 __main__     INFO     Metrics stat for training data with manual prices: {'mape': 0.30248466717889166, 'mdape': 0.2508078615566695, 'rmse': 72300.3674235182, 'r2': 0.3460679965248037, 'raif_metric': 2.033681100335469}
+2021-09-25 12:17:40,951 raif_hack.model INFO     Fit lightgbm
+2021-09-25 12:17:50,930 raif_hack.model INFO     Find corr coefficient
+2021-09-25 12:17:50,961 raif_hack.model INFO     Corr coef: -0.13
+2021-09-25 12:17:51,444 raif_hack.model INFO     Fit lightgbm
+2021-09-25 12:18:01,355 raif_hack.model INFO     Find corr coefficient
+2021-09-25 12:18:01,383 raif_hack.model INFO     Corr coef: -0.12
+2021-09-25 12:18:01,886 raif_hack.model INFO     Fit lightgbm
+2021-09-25 12:18:11,819 raif_hack.model INFO     Find corr coefficient
+2021-09-25 12:18:11,849 raif_hack.model INFO     Corr coef: -0.13
+2021-09-25 12:18:12,313 raif_hack.model INFO     Fit lightgbm
+2021-09-25 12:18:22,198 raif_hack.model INFO     Find corr coefficient
+2021-09-25 12:18:22,228 raif_hack.model INFO     Corr coef: -0.13
+2021-09-25 12:18:22,697 raif_hack.model INFO     Fit lightgbm
+2021-09-25 12:18:32,967 raif_hack.model INFO     Find corr coefficient
+2021-09-25 12:18:32,996 raif_hack.model INFO     Corr coef: -0.13
+2021-09-25 12:18:34,319 __main__     INFO     Metrics stat for training data with offers prices (cv): {'mape': 1.5549998356155634, 'mdape': 0.3166811340384336, 'rmse': 80895.88131845405, 'r2': 0.7813225516030564, 'raif_metric': 3.5313686488985603}
+2021-09-25 12:18:34,337 __main__     INFO     Metrics stat for training data with manual prices (cv): {'mape': 0.3035627702808367, 'mdape': 0.2524306588091094, 'rmse': 72387.41962065244, 'r2': 0.3444923340407102, 'raif_metric': 2.039016846113897}
+2021-09-25 12:18:34,338 __main__     INFO     Save models (cv)
+2021-09-25 12:18:34,669 __main__     INFO     END train.py
+2021-09-25 12:18:47,563 __main__     INFO     START predict.py
+2021-09-25 12:18:47,564 __main__     INFO     Load test df
+2021-09-25 12:18:47,583 __main__     INFO     Input shape: (2974, 76)
+2021-09-25 12:18:47,585 __main__     INFO     Load model
+2021-09-25 12:18:47,723 __main__     INFO     Predict
+2021-09-25 12:18:47,843 __main__     INFO     Save results (cv)
+2021-09-25 12:18:47,850 __main__     INFO     END predict.py

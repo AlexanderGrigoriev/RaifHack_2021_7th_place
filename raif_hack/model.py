@@ -78,7 +78,9 @@ class BenchmarkModel():
         :param y_manual: pd.Series - цены ручника
         """
         logger.info('Fit lightgbm')
-        self.pipeline.fit(X_offer, y_offer, model__feature_name=[f'{i}' for i in range(70)],model__categorical_feature=['67','68','69'])
+        # self.pipeline.fit(X_offer, y_offer, model__feature_name=[f'{i}' for i in range(70)],model__categorical_feature=['67','68','69'])
+        self.pipeline.fit(X_offer, y_offer, model__feature_name=[f'{i}' for i in range(71)],
+                          model__categorical_feature=['68', '69', '70'])
         logger.info('Find corr coefficient')
         self._find_corr_coefficient(X_manual, y_manual)
         logger.info(f'Corr coef: {self.corr_coef:.2f}')

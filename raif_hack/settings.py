@@ -1,3 +1,8 @@
+SEED = 42
+
+N_CV_RUNS = 1
+N_FOLDS = 5
+
 TARGET = 'per_square_meter_price'
 # признаки (или набор признаков), для которых применяем smoothed target encoding
 CATEGORICAL_STE_FEATURES = ['region', 'city', 'realty_type']
@@ -39,7 +44,7 @@ NUM_FEATURES = ['lat', 'lng', 'osm_amenity_points_in_0.001',
        'reform_count_of_houses_1000', 'reform_count_of_houses_500',
        'reform_house_population_1000', 'reform_house_population_500',
        'reform_mean_floor_count_1000', 'reform_mean_floor_count_500',
-       'reform_mean_year_building_1000', 'reform_mean_year_building_500','total_square']
+       'reform_mean_year_building_1000', 'reform_mean_year_building_500','total_square', 'floor']
 
 MODEL_PARAMS = dict(
             n_estimators=2000,
