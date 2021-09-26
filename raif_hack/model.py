@@ -3,6 +3,7 @@ import pickle
 import pandas as pd
 import numpy as np
 import logging
+import copy
 
 from lightgbm import LGBMRegressor
 
@@ -10,7 +11,11 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, OrdinalEncoder
 from sklearn.exceptions import NotFittedError
+from sklearn.linear_model import Ridge
 from raif_hack.data_transformers import SmoothedTargetEncoding
+
+from raif_hack.settings import MODEL_PARAMS, LOGGING_CONFIG, NUM_FEATURES, CATEGORICAL_OHE_FEATURES, CATEGORICAL_STE_FEATURES, TARGET, N_CV_RUNS, SEED, N_FOLDS, BEST_FNAME,  TRIALS_FNAME
+from .metrics import raif_loss
 
 logger = logging.getLogger(__name__)
 
@@ -47,11 +52,23 @@ class BenchmarkModel():
             ('ste', OrdinalEncoder(handle_unknown='use_encoded_value',unknown_value=-1),
              self.ste_cat_features)])
 
-        self.model = LGBMRegressor(**model_params)
+        main_model_params=copy.deepcopy(model_params)
+        main_model_params['n_estimators'] = int(.5 * main_model_params['n_estimators'])
+        self.model = LGBMRegressor(**main_model_params)#, objective=raif_loss)
+        self.pre_model = LGBMRegressor(**model_params)#, objective=raif_loss)
+        # self.cal_model = LGBMRegressor(**model_params)
 
         self.pipeline = Pipeline(steps=[
             ('preprocessor', self.preprocessor),
             ('model', self.model)])
+
+        self.pre_pipeline = Pipeline(steps=[
+            ('preprocessor', self.preprocessor),
+            ('model', self.pre_model)])
+
+        # self.cal_pipeline = Pipeline(steps=[
+        #     ('preprocessor', self.preprocessor),
+        #     ('model', self.cal_model)])
 
         self._is_fitted = False
         self.corr_coef = 0
@@ -63,8 +80,12 @@ class BenchmarkModel():
         :param y_manual: pd.Series - цены ручника
         """
         predictions = self.pipeline.predict(X_manual)
+        predictions = np.exp(predictions)
         deviation = ((y_manual - predictions)/predictions).median()
         self.corr_coef = deviation
+
+        # dev_array = ((y_manual - predictions)/predictions)
+        # self.cal_pipeline.fit(X_manual, dev_array)
 
     def fit(self, X_offer: pd.DataFrame, y_offer: pd.Series,
             X_manual: pd.DataFrame, y_manual: pd.Series):
@@ -78,9 +99,16 @@ class BenchmarkModel():
         :param y_manual: pd.Series - цены ручника
         """
         logger.info('Fit lightgbm')
-        # self.pipeline.fit(X_offer, y_offer, model__feature_name=[f'{i}' for i in range(70)],model__categorical_feature=['67','68','69'])
-        self.pipeline.fit(X_offer, y_offer, model__feature_name=[f'{i}' for i in range(71)],
-                          model__categorical_feature=['68', '69', '70'])
+        # self.pipeline.fit(X_offer, y_offer, model__feature_name=[f'{i}' for i in range(71)],
+        #                   model__categorical_feature=['68', '69', '70'])
+        # self.pre_pipeline.fit(X_offer, np.log(y_offer), model__feature_name=[f'{i}' for i in range(71)],
+        #                   model__categorical_feature=['68', '69', '70'])
+        # self.pipeline.fit(X_manual, np.log(y_manual), model__feature_name=[f'{i}' for i in range(71)],
+        #                   model__categorical_feature=['68', '69', '70'], model__init_model=self.pre_model)
+        self.pre_pipeline.fit(X_offer, np.log(y_offer), model__feature_name=[f'{i}' for i in range(75)],
+                              model__categorical_feature=['71', '72', '73', '74'])
+        self.pipeline.fit(X_manual, np.log(y_manual), model__feature_name=[f'{i}' for i in range(75)],
+                          model__categorical_feature=['71', '72', '73', '74'], model__init_model=self.pre_model)
         logger.info('Find corr coefficient')
         self._find_corr_coefficient(X_manual, y_manual)
         logger.info(f'Corr coef: {self.corr_coef:.2f}')
@@ -95,7 +123,26 @@ class BenchmarkModel():
         """
         if self.__is_fitted:
             predictions = self.pipeline.predict(X)
+            predictions = np.exp(predictions)
             corrected_price = predictions * (1 + self.corr_coef)
+            return corrected_price
+        else:
+            raise NotFittedError(
+                "This {} instance is not fitted yet! Call 'fit' with appropriate arguments before predict".format(
+                    type(self).__name__
+                )
+            )
+
+    def predict_cal(self, X: pd.DataFrame) -> np.array:
+        """Calibrated prediction.
+
+        :param X: pd.DataFrame
+        :return: np.array, предсказания (цены на коммерческую недвижимость)
+        """
+        if self.__is_fitted:
+            predictions = self.pipeline.predict(X)
+            corrs = self.cal_pipeline.predict(X)
+            corrected_price = predictions * (1 + corrs)
             return corrected_price
         else:
             raise NotFittedError(

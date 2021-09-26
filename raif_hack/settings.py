@@ -1,11 +1,19 @@
+from hyperopt import tpe
+
 SEED = 42
 
 N_CV_RUNS = 1
-N_FOLDS = 5
+N_FOLDS = 20 #5
+N_JOBS_PER_WORKER = 30
+
+HYPEROPT_N_ROUNDS = 50
+HYPEROPT_ALGO = tpe.suggest
+BEST_FNAME = 'best.pkl'
+TRIALS_FNAME = 'trials.pkl'
 
 TARGET = 'per_square_meter_price'
 # признаки (или набор признаков), для которых применяем smoothed target encoding
-CATEGORICAL_STE_FEATURES = ['region', 'city', 'realty_type']
+CATEGORICAL_STE_FEATURES = ['region', 'city', 'realty_type'] + ['city_type']
 
 # признаки, для которых применяем one hot encoding
 CATEGORICAL_OHE_FEATURES = []
@@ -44,7 +52,7 @@ NUM_FEATURES = ['lat', 'lng', 'osm_amenity_points_in_0.001',
        'reform_count_of_houses_1000', 'reform_count_of_houses_500',
        'reform_house_population_1000', 'reform_house_population_500',
        'reform_mean_floor_count_1000', 'reform_mean_floor_count_500',
-       'reform_mean_year_building_1000', 'reform_mean_year_building_500','total_square', 'floor']
+       'reform_mean_year_building_1000', 'reform_mean_year_building_500','total_square', 'floor'] + ['age', 'zarplata', 'floor_type']
 
 MODEL_PARAMS = dict(
             n_estimators=2000,
@@ -55,6 +63,8 @@ MODEL_PARAMS = dict(
             importance_type="gain",
             n_jobs=30, #1,
             random_state=563,
+            keep_training_booster=True,
+            # metric = 'custom'
         )
 
 LOGGING_CONFIG = {

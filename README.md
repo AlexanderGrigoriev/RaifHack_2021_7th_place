@@ -1,3 +1,7 @@
+# References
+we used features from this public solution to slightly improve score
+https://github.com/OksanaGolovina/RaiffHack/tree/main/Yapiki_publ
+
 # Описание
 Это бенчмарк скрипт для хакатона от Раййфайзенбанка по оценке коммерческой недвижимости
 Бенчмарк состоит из:
@@ -5,6 +9,8 @@
 * requirements.txt - стандартный requirements для pip
 * train.py - скрипт, который обучает модель и сохраняет ее
 * predict.py - скрипт, который делает предсказание на отложенной тестовой выборке
+* 
+* fix_train_data.ipynb - notebook for data cleansing. We use price_clean.csv instead of train.csv in our pipeline.
 
 # Запуск
 ## Вариант с poetry

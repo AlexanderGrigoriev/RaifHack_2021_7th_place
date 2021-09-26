@@ -3,9 +3,9 @@ import logging.config
 import numpy as np
 import pandas as pd
 import glob
-from raif_hack.features import prepare_categorical, clean_values
+from raif_hack.features import prepare_categorical, clean_values, add_features
 from traceback import format_exc
-
+from raif_hack.utils import PriceTypeEnum
 
 from raif_hack.model import BenchmarkModel
 from raif_hack.settings import LOGGING_CONFIG, NUM_FEATURES, CATEGORICAL_OHE_FEATURES, \
@@ -45,6 +45,7 @@ if __name__ == "__main__":
         logger.info(f'Input shape: {test_df.shape}')
         test_df = prepare_categorical(test_df)
         test_df = clean_values(test_df)
+        test_df = add_features(test_df)
 
         logger.info('Load model')
         model_fnames = glob.glob(f'{args["mp"]}*')
@@ -53,10 +54,15 @@ if __name__ == "__main__":
         models_preds = np.zeros((len(models), test_df.shape[0]))
         for i in range(len(models)):
             models_preds[i] = models[i].predict(test_df[NUM_FEATURES+CATEGORICAL_OHE_FEATURES+CATEGORICAL_STE_FEATURES])
+            # models_preds[i] = models[i].predict_cal(
+            #     test_df[NUM_FEATURES + CATEGORICAL_OHE_FEATURES + CATEGORICAL_STE_FEATURES])
         mean_preds = np.mean(models_preds, axis=0)
         test_df['per_square_meter_price'] = mean_preds
         logger.info('Save results (cv)')
-        test_df['per_square_meter_price'] *= .98
+        test_df['per_square_meter_price'] *= .96 # .92
+        test_df.loc[test_df['realty_type']==100, 'per_square_meter_price'] *= 1. #.98  # office -
+        test_df.loc[test_df['realty_type'] == 110, 'per_square_meter_price'] *= .96 #.98  # street
+        test_df.loc[test_df['realty_type'] == 10, 'per_square_meter_price'] *= 1.02   # free
         test_df[['id','per_square_meter_price']].to_csv(args['o'], index=False)
     except Exception as e:
         err = format_exc()

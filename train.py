@@ -4,14 +4,16 @@ import logging.config
 import numpy as np
 import pandas as pd
 from traceback import format_exc
+import joblib
+
 from sklearn.model_selection import cross_val_score, KFold
 
 from raif_hack.model import BenchmarkModel
-from raif_hack.settings import MODEL_PARAMS, LOGGING_CONFIG, NUM_FEATURES, CATEGORICAL_OHE_FEATURES,CATEGORICAL_STE_FEATURES,TARGET, N_CV_RUNS, SEED, N_FOLDS
+from raif_hack.settings import MODEL_PARAMS, LOGGING_CONFIG, NUM_FEATURES, CATEGORICAL_OHE_FEATURES, CATEGORICAL_STE_FEATURES, TARGET, N_CV_RUNS, SEED, N_FOLDS, BEST_FNAME,  TRIALS_FNAME
 from raif_hack.utils import PriceTypeEnum
 from raif_hack.metrics import metrics_stat, get_oof
-from raif_hack.features import prepare_categorical, clean_values
-
+from raif_hack.features import prepare_categorical, clean_values, add_features
+from raif_hack.optimize_hyperp import optimize_lgbm, objective as objective_fn
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
@@ -47,14 +49,40 @@ if __name__ == "__main__":
         logger.info(f'Input shape: {train_df.shape}')
         train_df = prepare_categorical(train_df)
         train_df = clean_values(train_df)
+        train_df = add_features(train_df)
 
         X_offer = train_df[train_df.price_type == PriceTypeEnum.OFFER_PRICE][NUM_FEATURES+CATEGORICAL_OHE_FEATURES+CATEGORICAL_STE_FEATURES]
         y_offer = train_df[train_df.price_type == PriceTypeEnum.OFFER_PRICE][TARGET]
         X_manual = train_df[train_df.price_type == PriceTypeEnum.MANUAL_PRICE][NUM_FEATURES+CATEGORICAL_OHE_FEATURES+CATEGORICAL_STE_FEATURES]
         y_manual = train_df[train_df.price_type == PriceTypeEnum.MANUAL_PRICE][TARGET]
+
+        # folds
+        folds_list = []
+        for i in range(N_CV_RUNS):
+            # skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=(seed + i))
+            kf = KFold(n_splits=N_FOLDS, shuffle=True, random_state=(SEED + i))
+            folds_list.append([])
+            for train_index, test_index in kf.split(train_df):
+                folds_list[-1].append([train_index, test_index])
+
+        ##  HYPERPARAMETERS
+        # best_params, prev_trials = optimize_lgbm(train_df,
+        #                                          train_df[TARGET],
+        #                                          objective_fn,
+        #                                          folds_list)
+        #
+        # joblib.dump(best_params, BEST_FNAME)
+        # joblib.dump(prev_trials, TRIALS_FNAME)
+
+        ##  HYPERPARAMETERS
+        best_params = joblib.load(BEST_FNAME)
+        trials = joblib.load(TRIALS_FNAME)
+        print(f'best parameters: {best_params}')
+        # best_params = MODEL_PARAMS
+
         logger.info(f'X_offer {X_offer.shape}  y_offer {y_offer.shape}\tX_manual {X_manual.shape} y_manual {y_manual.shape}')
         model = BenchmarkModel(numerical_features=NUM_FEATURES, ohe_categorical_features=CATEGORICAL_OHE_FEATURES,
-                                  ste_categorical_features=CATEGORICAL_STE_FEATURES, model_params=MODEL_PARAMS)
+                                  ste_categorical_features=CATEGORICAL_STE_FEATURES, model_params=best_params)
         logger.info('Fit model')
         model.fit(X_offer, y_offer, X_manual, y_manual)
         # logger.info('Save model')
@@ -68,14 +96,10 @@ if __name__ == "__main__":
         metrics = metrics_stat(y_manual.values, predictions_manual)
         logger.info(f'Metrics stat for training data with manual prices: {metrics}')
 
-        # folds
-        folds_list = []
-        for i in range(N_CV_RUNS):
-            # skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=(seed + i))
-            kf = KFold(n_splits=N_FOLDS, shuffle=True, random_state=(SEED + i))
-            folds_list.append([])
-            for train_index, test_index in kf.split(train_df):
-                folds_list[-1].append([train_index, test_index])
+        # predictions_manual_cal = model.predict_cal(X_manual)
+        # metrics = metrics_stat(y_manual.values, predictions_manual_cal)
+        # logger.info(f'Metrics stat for training data with manual prices (calibrated): {metrics}')
+
 
         X_train_stack = []
         for i in range(N_CV_RUNS):

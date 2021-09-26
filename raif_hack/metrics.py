@@ -14,6 +14,7 @@ NEGATIVE_WEIGHT = 1.1
 N_CV_RUNS = 1
 
 
+
 def get_oof(x_train, y_train, model, kf,
             n_cv_runs=N_CV_RUNS):
     est_list = []
@@ -69,6 +70,24 @@ def deviation_metric_one_sample(y_true: typing.Union[float, int], y_pred: typing
     else:
         return 9
 
+# buggy
+def raif_loss(y_pred, y_true):
+    # y_true = y_true.get_label()
+    residual = (y_true - y_pred).astype("float")
+
+    deviation = (y_pred - y_true) / np.maximum(1e-8, y_true)
+    grad = np.zeros_like(y_true)
+
+    grad[deviation <= - 4 * THRESHOLD] = -0.001  # 9 * NEGATIVE_WEIGHT
+    mask_neg = (deviation < -THRESHOLD) & (deviation > - 4 * THRESHOLD)
+    grad[mask_neg] = NEGATIVE_WEIGHT * ((deviation[mask_neg] / THRESHOLD) + 1) * 2 * (1 / (np.maximum(1e-8, y_true[mask_neg]) * THRESHOLD)) #NEGATIVE_WEIGHT * ((deviation / THRESHOLD) + 1) ** 2
+    mask_pos = (deviation > THRESHOLD) & (deviation < 4 * THRESHOLD)
+    grad[mask_pos] = ((deviation[mask_pos] / THRESHOLD) - 1) * 2 * (1 / (np.maximum(1e-8, y_true[mask_pos]) * THRESHOLD)) # ((deviation / THRESHOLD) - 1) ** 2
+    grad[deviation >= - 4 * THRESHOLD] = 0.001  # 9
+
+    hess = np.ones_like(y_true)
+
+    return grad, hess
 
 def deviation_metric(y_true: np.array, y_pred: np.array) -> float:
     return np.array([deviation_metric_one_sample(y_true[n], y_pred[n]) for n in range(len(y_true))]).mean()
